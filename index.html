@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Music Player</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #searchInput {
+      width: 300px;
+      padding: 8px;
+      margin: 20px;
+    }
+    #searchButton {
+      padding: 8px 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    #videoPlayer {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>YouTube Music Player</h1>
+  <input type="text" id="searchInput" placeholder="Search for music">
+  <button id="searchButton">Search</button>
+  <div id="videoPlayer"></div>
+
+  <script>
+    document.getElementById('searchButton').addEventListener('click', function() {
+      const searchTerm = document.getElementById('searchInput').value.trim();
+      if (searchTerm !== '') {
+        const formattedSearchTerm = encodeURIComponent(searchTerm);
+        const apiKey = 'AIzaSyA7Xyoee9wHAxlZiFKYfpS1qpBE1wj_jpk'; // Replace with your own API key
+        const apiUrl = `https://www.googleapis.com/youtube/v3/search?q=${formattedSearchTerm}&part=snippet&type=video&key=${apiKey}`;
+
+        fetch(apiUrl)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.items.length > 0) {
+              const videoId = data.items[0].id.videoId;
+              document.getElementById('videoPlayer').innerHTML = `
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}?origin=https://www.youtube.com" frameborder="0" allowfullscreen></iframe>
+              `;
+            } else {
+              alert('No videos found');
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+            alert('Error fetching data. Please try again.');
+          });
+      } else {
+        alert('Please enter a search term');
+      }
+    });
+  </script>
+</body>
+</html>
+
