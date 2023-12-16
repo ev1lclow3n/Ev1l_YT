@@ -2,16 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>YouTube Music Player</title>
+  <title>Ev1l YT</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
+      background-image: url('https://play-lh.googleusercontent.com/YUBDky2apqeojcw6eexQEpitWuRPOK7kPe_UbqQNv-A4Pi_fXm-YQ8vTCwPKtxIPgius');
+      background-size: cover;
+      background-position: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      min-height: 100vh;
+    }
+    #searchForm {
+      margin-top: 150px; /* Adjust the margin-top value as needed */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     #searchInput {
       width: 300px;
       padding: 8px;
-      margin: 20px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
     }
     #searchButton {
       padding: 8px 16px;
@@ -20,21 +39,47 @@
       color: white;
       border: none;
       border-radius: 4px;
+      font-size: 16px;
     }
     #videoPlayer {
-      margin-top: 20px;
-      display: flex;
+      display: none; /* Initially hide the video player */
+      margin-top: 50px; /* Adjust the margin-top value for video placement */
       justify-content: center;
+      color: white;
+      margin-bottom: 50px; /* Adjust the margin-bottom value for more space between search bar and video */
+      border: 2px solid white; /* Add initial border styling */
+      padding: 10px; /* Add padding for spacing inside the border */
+      transition: border-color 0.5s; /* Smooth transition for border color change */
+    }
+    #videoPlayer iframe {
+      border: none; /* Remove iframe border */
     }
   </style>
 </head>
 <body>
-  <input type="text" id="searchInput" placeholder="Search for music">
-  <button id="searchButton">Search</button>
+  <form id="searchForm">
+    <input type="text" id="searchInput" placeholder="Search for music">
+    <button type="button" id="searchButton">Search</button>
+  </form>
   <div id="videoPlayer"></div>
 
   <script>
-    document.getElementById('searchButton').addEventListener('click', function() {
+    document.getElementById('searchButton').addEventListener('click', searchMusic);
+    
+    document.getElementById('searchInput').addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        searchMusic();
+      }
+    });
+
+    function changeBorderColor() {
+      const videoPlayer = document.getElementById('videoPlayer');
+      const randomColor = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
+      videoPlayer.style.borderColor = randomColor;
+    }
+
+    function searchMusic() {
       const searchTerm = document.getElementById('searchInput').value.trim();
       if (searchTerm !== '') {
         const formattedSearchTerm = encodeURIComponent(searchTerm);
@@ -51,9 +96,13 @@
           .then(data => {
             if (data.items.length > 0) {
               const videoId = data.items[0].id.videoId;
-              document.getElementById('videoPlayer').innerHTML = `
+              const videoPlayer = document.getElementById('videoPlayer');
+              videoPlayer.style.display = 'flex'; // Display the video player
+              videoPlayer.innerHTML = `
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}?origin=https://www.youtube.com" frameborder="0" allowfullscreen></iframe>
               `;
+
+              setInterval(changeBorderColor, 3000); // Change border color every 3 seconds
             } else {
               alert('No videos found');
             }
@@ -65,8 +114,11 @@
       } else {
         alert('Please enter a search term');
       }
-    });
+    }
   </script>
+
+  <!-- Animated dragon GIF -->
+  <img src="https://media.tenor.com/sQvyMiFNl6oAAAAi/dance-anime.gif">
+  <!-- Replace 'path_to_dragon.gif' with the actual path or URL of your animated dragon GIF -->
 </body>
 </html>
-
